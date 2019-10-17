@@ -1,2 +1,1 @@
-# spring-mastering
-Mastering project for Spring Boot
+# Mastering project for Spring Boot
