@@ -24,8 +24,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -40,7 +42,7 @@ class TodoControllerTest {
     @MockBean
     private TodoService service;
 
-    private JacksonTester<List<Todo>> json;
+    private JacksonTester<Object> json;
 
     @BeforeEach
     public void setup() {
@@ -66,5 +68,33 @@ class TodoControllerTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(result.getResponse().getContentAsString()).isEqualTo(json.write(mockList).getJson());
+    }
+
+    @Test
+    void retrieveTodo() throws Exception {
+        final Todo mockTodo = new Todo(1, "Jack", "Learn Spring MVC", LocalDate.now(), false);
+
+        when(service.retrieveTodo(anyInt())).thenReturn(mockTodo);
+
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get("/users/Jack/todos/1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(json.write(mockTodo).getJson());
+    }
+
+    @Test
+    public void createTodo() throws Exception {
+        Todo mockTodo = new Todo(CREATED_TODO_ID, "Jack", "Learn Spring MVC", null, false);
+
+        when(service.addTodo(anyString(), anyString(), isNull(), anyBoolean())).thenReturn(mockTodo);
+
+        mvc.perform(
+                MockMvcRequestBuilders.post("/users/Jack/todos")
+                        .content(json.write(mockTodo).getJson())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("location", containsString("/users/Jack/todos/" + CREATED_TODO_ID)));
     }
 }
