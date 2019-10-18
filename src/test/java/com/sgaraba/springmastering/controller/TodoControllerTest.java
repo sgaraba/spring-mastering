@@ -97,4 +97,16 @@ class TodoControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", containsString("/users/Jack/todos/" + CREATED_TODO_ID)));
     }
+
+    @Test
+    public void createTodo_withValidationError() throws Exception {
+        Todo mockTodo = new Todo(CREATED_TODO_ID, "Jack", "Learn", LocalDate.now(), false);
+
+        when(service.addTodo(anyString(), anyString(), isNull(), anyBoolean())).thenReturn(mockTodo);
+
+        final MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/users/Jack/todos")
+                .content(json.write(mockTodo).getJson())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError()).andReturn();
+    }
 }
