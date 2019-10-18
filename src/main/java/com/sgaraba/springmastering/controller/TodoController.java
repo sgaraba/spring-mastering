@@ -5,6 +5,7 @@ import com.sgaraba.springmastering.exception.NotFoundException;
 import com.sgaraba.springmastering.service.TodoService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @RestController
@@ -19,6 +21,7 @@ import java.util.Objects;
 public class TodoController {
 
     private final TodoService todoService;
+    private final MessageSource messageSource;
 
     @ApiOperation(
             value = "Retrieve all todos for a user by passing in his name",
@@ -59,5 +62,10 @@ public class TodoController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(createdTodo.getId()).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/welcome-internationalized")
+    public String msg(@RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        return messageSource.getMessage("welcome.message", null, locale);
     }
 }
