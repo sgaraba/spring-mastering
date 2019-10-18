@@ -1,6 +1,6 @@
 package com.sgaraba.springmastering.controller;
 
-import com.sgaraba.springmastering.SpringMasteringApplication;
+import com.sgaraba.springmastering.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringMasteringApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BasicControllerIntegrationTest {
 
     @LocalServerPort
@@ -46,6 +46,4 @@ public class BasicControllerIntegrationTest {
                 .getForEntity(createURL("/welcome-with-parameter/name/Buddy", port), String.class);
         assertThat(response.getBody(), containsString("Hello World, Buddy!"));
     }
-
-
 }

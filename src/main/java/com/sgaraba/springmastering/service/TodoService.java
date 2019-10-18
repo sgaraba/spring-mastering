@@ -1,6 +1,7 @@
 package com.sgaraba.springmastering.service;
 
 import com.sgaraba.springmastering.bean.Todo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class TodoService {
         todos.add(new Todo(3, "Jill", "Learn Hibernate", LocalDate.now(), false));
     }
 
+    @Cacheable("todos")
     public List<Todo> retrieveTodos(String user) {
         List<Todo> filteredTodos = new ArrayList<Todo>();
         for (Todo todo : todos) {

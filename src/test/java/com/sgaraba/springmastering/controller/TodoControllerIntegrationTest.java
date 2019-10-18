@@ -1,7 +1,7 @@
 package com.sgaraba.springmastering.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sgaraba.springmastering.SpringMasteringApplication;
+import com.sgaraba.springmastering.Application;
 import com.sgaraba.springmastering.bean.Todo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static com.sgaraba.springmastering.utils.TestUtils.createURL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = SpringMasteringApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TodoControllerIntegrationTest {
 
     @LocalServerPort
