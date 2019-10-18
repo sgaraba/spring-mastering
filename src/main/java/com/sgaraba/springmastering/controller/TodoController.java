@@ -27,12 +27,15 @@ public class TodoController {
     }
 
     @GetMapping(path = "/users/{name}/todos/{id}")
-    public Todo retrieveTodo(@PathVariable String name, @PathVariable int id) {
+    public EntityModel<Todo> retrieveTodo(@PathVariable String name, @PathVariable int id) {
         final Todo todo = todoService.retrieveTodo(id);
         if (Objects.isNull(todo)) {
             throw new NotFoundException("Todo Not Found.");
         }
-        return todo;
+        EntityModel<Todo> todoResource = new EntityModel<Todo>(todo);
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrieveTodos(name));
+        todoResource.add(linkTo.withRel("parent"));
+        return todoResource;
     }
 
     @GetMapping(path = "/users/dummy-service")
