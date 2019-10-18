@@ -6,19 +6,21 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static com.sgaraba.springmastering.utils.TestUtils.createHeaders;
+import static com.sgaraba.springmastering.utils.TestUtils.createURL;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringMasteringApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BasicControllerIntegrationTest {
-
-    private static final String LOCAL_HOST = "http://localhost:";
 
     @LocalServerPort
     private int port;
@@ -27,24 +29,23 @@ public class BasicControllerIntegrationTest {
 
     @Test
     public void welcome() {
-        final ResponseEntity<String> response = template.getForEntity(createURL("/welcome"), String.class);
+        ResponseEntity<String> response = template.getForEntity(createURL("/welcome", port), String.class);
         assertThat(response.getBody(), equalTo("Hello World"));
     }
 
     @Test
     public void welcomeWithObject() {
-        final ResponseEntity<String> response = template.getForEntity(createURL("/welcome-with-object"), String.class);
+        ResponseEntity<String> response = template.exchange(createURL("/welcome-with-object", port),
+                HttpMethod.GET, new HttpEntity<String>(null, createHeaders("admin", "password")), String.class);
         assertThat(response.getBody(), containsString("Hello World"));
     }
 
     @Test
     public void welcomeWithParameter() {
-        final ResponseEntity<String> response = template
-                .getForEntity(createURL("/welcome-with-parameter/name/Buddy"), String.class);
+        ResponseEntity<String> response = template
+                .getForEntity(createURL("/welcome-with-parameter/name/Buddy", port), String.class);
         assertThat(response.getBody(), containsString("Hello World, Buddy!"));
     }
 
-    private String createURL(String uri) {
-        return String.format("%s%s%s", LOCAL_HOST, port, uri);
-    }
+
 }

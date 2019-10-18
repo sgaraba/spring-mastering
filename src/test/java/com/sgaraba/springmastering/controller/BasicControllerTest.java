@@ -3,6 +3,7 @@ package com.sgaraba.springmastering.controller;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(BasicController.class)
+@WebMvcTest(value = BasicController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class BasicControllerTest {
 
     @Autowired
